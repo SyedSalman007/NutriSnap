@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -16,7 +17,7 @@ const UserProfileSchema = z.object({
   height: z.number().describe('The height of the user in centimeters.'),
   weight: z.number().describe('The weight of the user in kilograms.'),
   dietaryPreferences: z
-    .string() /* .array(z.enum(['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'keto', 'paleo'])) */
+    .string() 
     .describe('The dietary preferences of the user.'),
 });
 
@@ -36,7 +37,7 @@ export type PersonalizedRecommendationsInput = z.infer<
 const PersonalizedRecommendationsOutputSchema = z.object({
   recommendations: z
     .array(z.string())
-    .describe('A list of personalized nutrition recommendations.'),
+    .describe('A list of personalized nutrition recommendations, including specific meal/food item suggestions.'),
   feedback: z.string().describe('Personalized feedback on the user`s diet.'),
 });
 export type PersonalizedRecommendationsOutput = z.infer<
@@ -70,10 +71,14 @@ const prompt = ai.definePrompt({
 
   Provide recommendations and feedback to help the user make informed decisions about their diet.
   Ensure that the recommendations align with the user's dietary preferences.
+  Your recommendations should include:
+  - General dietary advice.
+  - 2-3 specific meal or food item suggestions suitable for the user, along with a brief explanation for each benefit.
+  
   DO NOT MAKE UP INFORMATION. If the user profile or logged meals are missing, respond accordingly.
-  If the user profile is complete but no meals have been logged, make general recommendations based on the profile data.
+  If the user profile is complete but no meals have been logged, make general recommendations based on the profile data, including potential meal ideas.
   If the user profile is incomplete or contains nonsensical data, request for the user to provide more information or correct the data.
-  Responses should contain the key recommendations and feedback.
+  Responses should contain the key recommendations, specific meal/food item suggestions, and feedback.
   `,
 });
 
@@ -88,3 +93,4 @@ const personalizedRecommendationsFlow = ai.defineFlow(
     return output!;
   }
 );
+

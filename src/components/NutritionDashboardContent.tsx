@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import Link from 'next/link';
 import { ScrollArea } from './ui/scroll-area';
 import { Leaf } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function NutritionDashboardContent() {
   const { meals, isLoading, profile } = useAppState();

@@ -64,11 +64,13 @@ const prompt = ai.definePrompt({
 
   Based on the user's profile and logged meals (which list available ingredients), provide personalized recommendations and feedback.
 
+  {{#with userProfile}}
   User Profile:
-  - Age: {{userProfile.age}}
-  - Height: {{userProfile.height}} cm
-  - Weight: {{userProfile.weight}} kg
-  - Dietary Preferences: {{{userProfile.dietaryPreferences}}}
+  - Age: {{age}}
+  - Height: {{height}} cm
+  - Weight: {{weight}} kg
+  - Dietary Preferences: {{{dietaryPreferences}}}
+  {{/with}}
 
   Logged Meals (treat these as a list of available ingredients for new dish suggestions):
   {{#each loggedMeals}}

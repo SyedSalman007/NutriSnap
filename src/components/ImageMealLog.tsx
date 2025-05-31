@@ -3,7 +3,7 @@
 import { useState, ChangeEvent } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ManualMealFormData, ManualMealFormSchema } from '@/lib/schemas'; // Re-use for structure
+import { ManualMealFormData, ManualMealFormSchema } from '@/lib/schemas'; 
 import { useAppState } from '@/contexts/AppStateContext';
 import { identifyFoodItems, IdentifyFoodItemsInput } from '@/ai/flows/identify-food-items';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ export function ImageMealLog() {
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 
-  const form = useForm<ManualMealFormData>({ // Using ManualMealFormData for structure after identification
+  const form = useForm<ManualMealFormData>({ 
     resolver: zodResolver(ManualMealFormSchema),
     defaultValues: {
       foodItems: [],
@@ -41,7 +41,6 @@ export function ImageMealLog() {
       const reader = new FileReader();
       reader.onload = (e) => {
         setPhotoDataUri(e.target?.result as string);
-        // Clear previous items if a new image is uploaded
         replace([]); 
       };
       reader.readAsDataURL(file);
@@ -58,7 +57,7 @@ export function ImageMealLog() {
       return;
     }
     setIsIdentifying(true);
-    form.reset({ foodItems: [] }); // Clear previous form items
+    form.reset({ foodItems: [] }); 
 
     try {
       const input: IdentifyFoodItemsInput = { photoDataUri };
@@ -66,11 +65,11 @@ export function ImageMealLog() {
       
       if (result.foodItems && result.foodItems.length > 0) {
         const newFoodItems = result.foodItems.map(item => ({ name: item, quantity: '' }));
-        replace(newFoodItems); // Replace field array with new items
+        replace(newFoodItems); 
         toast({ title: "Food Identified!", description: "Please review and add quantities." });
       } else {
         toast({ title: "No Food Identified", description: "Could not identify food items. Please try manual entry or a different image." });
-        append({ name: '', quantity: '' }); // Add one empty item for manual input
+        append({ name: '', quantity: '' }); 
       }
     } catch (error) {
       console.error("Error identifying food:", error);
@@ -104,32 +103,32 @@ export function ImageMealLog() {
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline">Log Meal with Image</CardTitle>
+        <CardTitle className="font-headline text-xl md:text-2xl">Log Meal with Image</CardTitle>
         <CardDescription>Upload an image of your meal to identify food items automatically.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4 md:space-y-6">
             <div>
               <label htmlFor="meal-image-upload" className="block text-sm font-medium text-foreground mb-1">
                 Upload Meal Photo
               </label>
-              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md border-border hover:border-primary transition-colors">
-                <div className="space-y-1 text-center">
+              <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md border-border hover:border-primary transition-colors min-h-[150px] md:min-h-[200px]">
+                <div className="space-y-1 text-center flex flex-col items-center justify-center">
                   {photoDataUri ? (
-                    <Image src={photoDataUri} alt="Meal preview" width={200} height={200} className="mx-auto h-32 w-32 object-cover rounded-md" />
+                    <Image src={photoDataUri} alt="Meal preview" width={160} height={160} className="mx-auto h-24 w-24 md:h-32 md:w-32 object-cover rounded-md" loading="lazy"/>
                   ) : (
-                    <UploadCloud className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <UploadCloud className="mx-auto h-10 w-10 md:h-12 md:w-12 text-muted-foreground" />
                   )}
                   <div className="flex text-sm text-muted-foreground">
                     <label
                       htmlFor="meal-image-upload-input"
-                      className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring"
+                      className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-ring p-2" // Added padding for touch target
                     >
                       <span>Upload a file</span>
                       <Input id="meal-image-upload-input" name="meal-image-upload" type="file" className="sr-only" accept="image/*" onChange={handleFileChange} />
                     </label>
-                    <p className="pl-1">or drag and drop</p>
+                    <p className="pl-1 self-center">or drag and drop</p>
                   </div>
                   <p className="text-xs text-muted-foreground">{fileName || "PNG, JPG, GIF up to 10MB"}</p>
                 </div>
@@ -137,7 +136,7 @@ export function ImageMealLog() {
             </div>
 
             {photoDataUri && (
-              <Button type="button" onClick={handleIdentifyFood} disabled={isIdentifying || !photoDataUri} className="w-full">
+              <Button type="button" onClick={handleIdentifyFood} disabled={isIdentifying || !photoDataUri} className="w-full min-h-[48px] text-base md:text-sm">
                 {isIdentifying ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 {isIdentifying ? "Identifying..." : "Identify Food Items"}
               </Button>
@@ -149,7 +148,7 @@ export function ImageMealLog() {
                  <FormField
                     key={field.id}
                     control={form.control}
-                    name={`foodItems.${index}`} // This name should match the useFieldArray name
+                    name={`foodItems.${index}`} 
                     render={() => (
                       <FormItem>
                         <FoodItemInput
@@ -174,7 +173,7 @@ export function ImageMealLog() {
                 variant="outline"
                 size="sm"
                 onClick={() => append({ name: '', quantity: '' })}
-                className="mt-2"
+                className="mt-2 min-h-[44px] px-4"
               >
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Add Another Item
@@ -183,7 +182,7 @@ export function ImageMealLog() {
           </CardContent>
           {fields.length > 0 && (
             <CardFooter>
-              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || fields.length === 0}>
+              <Button type="submit" className="w-full min-h-[48px] text-base md:text-sm" disabled={form.formState.isSubmitting || fields.length === 0}>
                 {form.formState.isSubmitting ? "Logging Meal..." : "Log Identified Meal"}
               </Button>
             </CardFooter>

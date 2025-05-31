@@ -7,9 +7,9 @@ interface PageContainerProps {
 
 export function PageContainer({ children, title }: PageContainerProps) {
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-screen-xl px-4 md:px-8 lg:px-12 py-6 md:py-8 lg:py-12">
       {title && (
-        <h1 className="text-3xl font-headline font-bold mb-8 text-foreground">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-headline font-bold mb-6 md:mb-8 text-foreground leading-tight md:leading-snug lg:leading-tight">
           {title}
         </h1>
       )}

@@ -8,6 +8,11 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      // screens effectively handled by max-w-screen-xl in PageContainer
+      // padding is handled in PageContainer for responsiveness
+    },
     extend: {
       fontFamily: {
         body: ['PT Sans', 'sans-serif'],

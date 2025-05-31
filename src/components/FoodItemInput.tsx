@@ -7,26 +7,33 @@ import { UseFieldArrayRemove, UseFormRegister } from "react-hook-form";
 
 interface FoodItemInputProps {
   index: number;
-  register: UseFormRegister<any>; // Adjust type as per your form values
+  register: UseFormRegister<any>; 
   remove: UseFieldArrayRemove;
-  fieldNamePrefix: string; // e.g., "foodItems"
+  fieldNamePrefix: string; 
 }
 
 export function FoodItemInput({ index, register, remove, fieldNamePrefix }: FoodItemInputProps) {
   return (
-    <div className="flex items-center gap-2 p-3 border rounded-md shadow-sm bg-card">
+    <div className="flex flex-col sm:flex-row items-center gap-2 p-3 border rounded-md shadow-sm bg-card">
       <Input
         {...register(`${fieldNamePrefix}.${index}.name`)}
         placeholder={`Food Item ${index + 1}`}
-        className="flex-grow"
+        className="flex-grow w-full sm:w-auto h-12 md:h-10"
       />
       <Input
         {...register(`${fieldNamePrefix}.${index}.quantity`)}
         placeholder="Quantity (e.g., 1 cup)"
-        className="w-1/3"
+        className="w-full sm:w-1/3 h-12 md:h-10"
       />
-      <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)} aria-label="Remove food item">
-        <X className="h-4 w-4 text-destructive" />
+      <Button 
+        type="button" 
+        variant="ghost" 
+        size="icon" 
+        onClick={() => remove(index)} 
+        aria-label="Remove food item"
+        className="h-10 w-10 md:h-9 md:w-9 flex-shrink-0"
+      >
+        <X className="h-5 w-5 md:h-4 md:w-4 text-destructive" />
       </Button>
     </div>
   );

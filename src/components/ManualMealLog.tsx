@@ -31,7 +31,7 @@ export function ManualMealLog() {
     addMeal({ 
       foodItems: data.foodItems, 
       source: 'manual',
-      imageHint: 'various food items' // Generic hint for manual entries
+      imageHint: 'various food items' 
     });
     toast({
       title: "Meal Logged",
@@ -43,12 +43,12 @@ export function ManualMealLog() {
   return (
     <Card className="w-full shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline">Log Meal Manually</CardTitle>
+        <CardTitle className="font-headline text-xl md:text-2xl">Log Meal Manually</CardTitle>
         <CardDescription>Enter the food items and their quantities for your meal.</CardDescription>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 md:space-y-6">
             {fields.map((field, index) => (
               <FormField
                 key={field.id}
@@ -75,14 +75,14 @@ export function ManualMealLog() {
               variant="outline"
               size="sm"
               onClick={() => append({ name: '', quantity: '' })}
-              className="mt-2"
+              className="mt-2 min-h-[44px] px-4"
             >
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Food Item
             </Button>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            <Button type="submit" className="w-full min-h-[48px] text-base md:text-sm" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Logging Meal..." : "Log Meal"}
             </Button>
           </CardFooter>

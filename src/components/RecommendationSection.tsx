@@ -77,24 +77,24 @@ export function RecommendationSection() {
 
   return (
     <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle className="font-headline text-xl flex items-center">
-          <Sparkles className="h-6 w-6 mr-2 text-primary" />
+      <CardHeader className="p-4 md:p-6">
+        <CardTitle className="font-headline text-lg md:text-xl flex items-center">
+          <Sparkles className="h-5 w-5 md:h-6 md:w-6 mr-2 text-primary" />
           Personalized Nutrition Insights
         </CardTitle>
-        <CardDescription>Get AI-powered recommendations based on your profile and logged meals.</CardDescription>
+        <CardDescription className="text-sm md:text-base">Get AI-powered recommendations based on your profile and logged meals.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-4 md:p-6">
         {!profile ? (
           <div className="text-center p-4 border border-dashed rounded-md">
-            <AlertTriangle className="mx-auto h-10 w-10 text-muted-foreground mb-2" />
-            <p className="text-muted-foreground mb-3">Please create your profile to unlock personalized recommendations.</p>
-            <Button asChild variant="outline">
+            <AlertTriangle className="mx-auto h-8 w-8 md:h-10 md:w-10 text-muted-foreground mb-2" />
+            <p className="text-muted-foreground mb-3 text-sm md:text-base">Please create your profile to unlock personalized recommendations.</p>
+            <Button asChild variant="outline" size="lg" className="min-h-[48px] w-full sm:w-auto">
               <Link href="/profile">Create Profile</Link>
             </Button>
           </div>
         ) : (
-          <Button onClick={handleGetRecommendations} disabled={isLoading} className="w-full">
+          <Button onClick={handleGetRecommendations} disabled={isLoading} className="w-full min-h-[48px] text-base md:text-sm" size="lg">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -111,12 +111,12 @@ export function RecommendationSection() {
         {recommendations && (
           <div className="mt-6 space-y-4">
             <div>
-              <h3 className="font-semibold text-lg text-foreground mb-2">Feedback on Your Diet:</h3>
-              <p className="text-sm text-foreground/80 whitespace-pre-wrap bg-muted p-3 rounded-md">{recommendations.feedback}</p>
+              <h3 className="font-semibold text-base md:text-lg text-foreground mb-2">Feedback on Your Diet:</h3>
+              <p className="text-sm md:text-base text-foreground/80 whitespace-pre-wrap bg-muted p-3 rounded-md">{recommendations.feedback}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-lg text-foreground mb-2">Recommendations:</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm text-foreground/80 bg-muted p-3 rounded-md">
+              <h3 className="font-semibold text-base md:text-lg text-foreground mb-2">Recommendations:</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm md:text-base text-foreground/80 bg-muted p-3 rounded-md">
                 {recommendations.recommendations.map((rec, index) => (
                   <li key={index}>{rec}</li>
                 ))}

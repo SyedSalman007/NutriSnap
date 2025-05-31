@@ -42,18 +42,18 @@ export function ProfileForm() {
       title: "Profile Updated",
       description: "Your profile information has been saved.",
     });
-    router.push('/'); // Navigate to dashboard after saving
+    router.push('/'); 
   }
 
   return (
     <Card className="w-full max-w-lg mx-auto shadow-lg">
       <CardHeader>
-        <CardTitle className="font-headline">Your Profile</CardTitle>
+        <CardTitle className="font-headline text-xl md:text-2xl">Your Profile</CardTitle>
         <CardDescription>Help us personalize your nutrition advice.</CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardContent className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 md:space-y-8">
+          <CardContent className="space-y-4 md:space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -61,13 +61,13 @@ export function ProfileForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your name" {...field} />
+                    <Input placeholder="Enter your name" {...field} className="h-12 md:h-10" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               <FormField
                 control={form.control}
                 name="age"
@@ -75,7 +75,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Age</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Years" {...field} value={field.value ?? ''} />
+                      <Input type="number" placeholder="Years" {...field} value={field.value ?? ''} className="h-12 md:h-10" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -88,7 +88,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Height (cm)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="cm" {...field} value={field.value ?? ''} />
+                      <Input type="number" placeholder="cm" {...field} value={field.value ?? ''} className="h-12 md:h-10" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -101,7 +101,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Weight (kg)</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="kg" {...field} value={field.value ?? ''} />
+                      <Input type="number" placeholder="kg" {...field} value={field.value ?? ''} className="h-12 md:h-10" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -118,7 +118,7 @@ export function ProfileForm() {
                     <Textarea
                       placeholder="e.g., Vegetarian, Low-carb, Allergic to peanuts"
                       {...field}
-                      className="resize-none"
+                      className="resize-none min-h-[100px]"
                     />
                   </FormControl>
                   <FormMessage />
@@ -127,7 +127,12 @@ export function ProfileForm() {
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+            <Button 
+              type="submit" 
+              className="w-full md:w-auto min-h-[48px] px-8 py-3 text-base md:text-sm" 
+              disabled={form.formState.isSubmitting}
+              size="lg"
+            >
               {form.formState.isSubmitting ? "Saving..." : "Save Profile"}
             </Button>
           </CardFooter>

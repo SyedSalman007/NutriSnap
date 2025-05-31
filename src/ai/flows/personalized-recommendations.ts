@@ -65,7 +65,10 @@ const prompt = ai.definePrompt({
   Based on the user's profile and logged meals (which list available ingredients), provide personalized recommendations and feedback.
 
   User Profile:
-  {{{jsonStringify userProfile}}}
+  - Age: {{userProfile.age}}
+  - Height: {{userProfile.height}} cm
+  - Weight: {{userProfile.weight}} kg
+  - Dietary Preferences: {{{userProfile.dietaryPreferences}}}
 
   Logged Meals (treat these as a list of available ingredients for new dish suggestions):
   {{#each loggedMeals}}
@@ -98,12 +101,8 @@ const personalizedRecommendationsFlow = ai.defineFlow(
     inputSchema: PersonalizedRecommendationsInputSchema,
     outputSchema: PersonalizedRecommendationsOutputSchema,
   },
-  async input => {
-    const {output} = await prompt({
-      ...input,
-      // Helper for JSON stringifying in Handlebars if needed, though direct object access is usually fine.
-      jsonStringify: (obj: any) => JSON.stringify(obj, null, 2) 
-    });
+  async (input: PersonalizedRecommendationsInput) => {
+    const {output} = await prompt(input);
     return output!;
   }
 );

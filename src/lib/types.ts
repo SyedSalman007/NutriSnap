@@ -25,7 +25,13 @@ export interface AppState {
   meals: LoggedMeal[];
 }
 
+export interface RecommendedDish {
+  dishName: string;
+  calories: number;
+  healthRecommendation: string;
+}
+
 export interface PersonalizedRecommendation {
-  recommendations: string[];
+  recommendations: RecommendedDish[];
   feedback: string;
 }

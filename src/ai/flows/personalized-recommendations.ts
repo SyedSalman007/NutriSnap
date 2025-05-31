@@ -17,28 +17,34 @@ const UserProfileSchema = z.object({
   height: z.number().describe('The height of the user in centimeters.'),
   weight: z.number().describe('The weight of the user in kilograms.'),
   dietaryPreferences: z
-    .string() 
+    .string()
     .describe('The dietary preferences of the user.'),
 });
 
 const LoggedMealSchema = z.object({
-  foodItems: z.array(z.string()).describe('A list of food items consumed in the meal.'),
-  quantity: z.array(z.string()).describe('A list of quantities of each food item consumed in the meal'),
+  foodItems: z.array(z.string()).describe('A list of food items consumed in the meal, to be considered as available ingredients.'),
+  quantity: z.array(z.string()).describe('A list of quantities of each food item consumed in the meal. Focus on items as ingredients for new dish suggestions.'),
 });
 
 const PersonalizedRecommendationsInputSchema = z.object({
   userProfile: UserProfileSchema.describe('The user profile.'),
-  loggedMeals: z.array(LoggedMealSchema).describe('A list of logged meals.'),
+  loggedMeals: z.array(LoggedMealSchema).describe('A list of logged meals, which indicate available ingredients for dish suggestions.'),
 });
 export type PersonalizedRecommendationsInput = z.infer<
   typeof PersonalizedRecommendationsInputSchema
 >;
 
+const RecommendedDishSchema = z.object({
+  dishName: z.string().describe('The name of the recommended food dish that can be prepared from available ingredients.'),
+  calories: z.number().describe('Estimated calorie count for one serving of the dish, as a numerical value.'),
+  healthRecommendation: z.string().describe('Personalized advice on whether this dish is healthy for the user and why, considering their profile.'),
+});
+
 const PersonalizedRecommendationsOutputSchema = z.object({
   recommendations: z
-    .array(z.string())
-    .describe('A list of personalized nutrition recommendations, including specific meal/food item suggestions.'),
-  feedback: z.string().describe('Personalized feedback on the user`s diet.'),
+    .array(RecommendedDishSchema)
+    .describe('A list of personalized dish recommendations, including dish name, calorie information, and health advice. These dishes should be preparable from the logged food items.'),
+  feedback: z.string().describe('Personalized general feedback on the user`s diet based on their profile and logged meals.'),
 });
 export type PersonalizedRecommendationsOutput = z.infer<
   typeof PersonalizedRecommendationsOutputSchema
@@ -56,29 +62,33 @@ const prompt = ai.definePrompt({
   output: {schema: PersonalizedRecommendationsOutputSchema},
   prompt: `You are a nutritionist providing personalized nutrition recommendations.
 
-  Based on the user's profile and logged meals, provide personalized
-  recommendations and feedback.
+  Based on the user's profile and logged meals (which list available ingredients), provide personalized recommendations and feedback.
 
   User Profile:
-  {{userProfile}}
+  {{{jsonStringify userProfile}}}
 
-  Logged Meals:
+  Logged Meals (treat these as a list of available ingredients for new dish suggestions):
   {{#each loggedMeals}}
-  Meal {{@index}}:
+  Meal {{@index}} (Ingredients available from this log):
   Foods: {{this.foodItems}}
-  Quantities: {{this.quantity}}
+  Quantities: {{this.quantity}} (Note: focus on the food items as ingredients, the logged quantities are less important for suggesting new dishes)
   {{/each}}
 
   Provide recommendations and feedback to help the user make informed decisions about their diet.
   Ensure that the recommendations align with the user's dietary preferences.
-  Your recommendations should include:
-  - General dietary advice.
-  - 2-3 specific meal or food item suggestions suitable for the user, along with a brief explanation for each benefit.
-  
-  DO NOT MAKE UP INFORMATION. If the user profile or logged meals are missing, respond accordingly.
-  If the user profile is complete but no meals have been logged, make general recommendations based on the profile data, including potential meal ideas.
-  If the user profile is incomplete or contains nonsensical data, request for the user to provide more information or correct the data.
-  Responses should contain the key recommendations, specific meal/food item suggestions, and feedback.
+
+  Your output must include:
+  1.  'feedback': General dietary feedback based on the user's profile and overall eating patterns from logged meals.
+  2.  'recommendations': A list of 2-3 specific food dishes. For each dish suggestion:
+      *   The dish should be primarily preparable using the ingredients available from the 'Logged Meals' section. You can assume common pantry staples like spices, oil, etc., are available.
+      *   'dishName': The name of the suggested dish.
+      *   'calories': The estimated calorie count for one serving of the dish (provide as a number, e.g., 350).
+      *   'healthRecommendation': Personalized advice on whether this dish is healthy for the user to eat, considering their profile (age, height, weight, dietary preferences), and explain why.
+
+  DO NOT MAKE UP INFORMATION.
+  If the user profile is incomplete (missing age, height, or weight) or contains nonsensical data, provide feedback requesting the user to provide more information or correct the data, and make the recommendations list empty.
+  If the user profile is complete but no meals/ingredients have been logged (loggedMeals is empty), make general recommendations based on the profile data in the 'feedback' field, and state in the 'feedback' that no specific dish suggestions can be made without knowing available ingredients. Keep the 'recommendations' list empty.
+  If logged meals are provided but are insufficient to create 2-3 distinct dish suggestions, suggest as many as possible and note this limitation in the feedback.
   `,
 });
 
@@ -89,8 +99,11 @@ const personalizedRecommendationsFlow = ai.defineFlow(
     outputSchema: PersonalizedRecommendationsOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const {output} = await prompt({
+      ...input,
+      // Helper for JSON stringifying in Handlebars if needed, though direct object access is usually fine.
+      jsonStringify: (obj: any) => JSON.stringify(obj, null, 2) 
+    });
     return output!;
   }
 );
-

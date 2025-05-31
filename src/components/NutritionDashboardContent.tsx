@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useState } from 'react';
 import { useAppState } from '@/contexts/AppStateContext';
 import { Greeting } from './Greeting';
 import { MealCard } from './MealCard';
@@ -10,9 +12,23 @@ import { ScrollArea } from './ui/scroll-area';
 import { Leaf } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-
 export function NutritionDashboardContent() {
   const { meals, isLoading, profile } = useAppState();
+  const [selectedMealIds, setSelectedMealIds] = useState<Set<string>>(new Set());
+
+  const handleMealSelect = (mealId: string, selected: boolean) => {
+    setSelectedMealIds(prevSelectedIds => {
+      const newSelectedIds = new Set(prevSelectedIds);
+      if (selected) {
+        newSelectedIds.add(mealId);
+      } else {
+        newSelectedIds.delete(mealId);
+      }
+      return newSelectedIds;
+    });
+  };
+
+  const selectedMeals = meals.filter(meal => selectedMealIds.has(meal.id));
 
   if (isLoading) {
     return (
@@ -43,10 +59,22 @@ export function NutritionDashboardContent() {
         </Card>
       )}
 
-      <RecommendationSection />
+      <RecommendationSection 
+        selectedMealsData={selectedMeals} 
+        hasAvailableMeals={meals.length > 0}
+      />
 
       <div>
-        <h2 className="text-xl md:text-2xl font-headline font-semibold mb-4 text-foreground">Your Recent Meals</h2>
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4">
+          <h2 className="text-xl md:text-2xl font-headline font-semibold text-foreground">
+            {meals.length > 0 ? "Select Meals for Recommendations" : "Your Recent Meals"}
+          </h2>
+          {meals.length > 0 && selectedMealIds.size > 0 && (
+             <Button variant="outline" size="sm" onClick={() => setSelectedMealIds(new Set())} className="mt-2 sm:mt-0">
+               Clear Selection ({selectedMealIds.size} selected)
+            </Button>
+          )}
+        </div>
         {meals.length === 0 ? (
           <Card className="text-center p-6 md:p-8 border-dashed shadow-sm">
             <CardContent className="flex flex-col items-center">
@@ -61,7 +89,13 @@ export function NutritionDashboardContent() {
           <ScrollArea className="h-[500px] md:h-[600px] pr-3 md:pr-4 -mr-3 md:-mr-4"> 
             <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {meals.map(meal => (
-                <MealCard key={meal.id} meal={meal} />
+                <MealCard 
+                  key={meal.id} 
+                  meal={meal} 
+                  isSelected={selectedMealIds.has(meal.id)}
+                  onMealSelect={handleMealSelect}
+                  showCheckbox={meals.length > 0}
+                />
               ))}
             </div>
           </ScrollArea>
